@@ -230,5 +230,8 @@
 
   So, the only data we MUST supply to this algorithm (besides the row data) is the UI query we're trying to satisfy, and
   the row-level graph edges that are implied in the model.
+
+  TODO: function to do a final clojure.set/rename-keys on entities before response (spectre with transform)
+  TODO: top-level function to combine all steps
   "
   )

@@ -2,11 +2,11 @@
   (:require
     [clojure.pprint :refer [pprint]]
     [clojure.stacktrace :refer [print-stack-trace]]
-
     [clojure.tools.namespace.repl :as tools-ns :refer [set-refresh-dirs]]
     [com.stuartsierra.component :as component]
     [figwheel-sidecar.system :as fig]
-    [untangled-template.system :as sys]))
+    [untangled-template.system :as sys])
+  (:use com.rpl.specter))
 
 ;;FIGWHEEL
 (def figwheel (atom nil))
@@ -72,3 +72,12 @@
 
 (defn engage [path & build-ids]
   (stop) (go path) (start-figwheel build-ids))
+
+(comment
+  (transform
+    (walker keyword?)
+    (fn [kw]
+      (case kw
+        :a :b
+        kw))
+    {:a 1 :c [{:a 2 :c 43}]}))
