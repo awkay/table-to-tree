@@ -7,8 +7,8 @@
 
 ;; assuming SELECT p.id AS person/id, ... LEFT JOIN phone ...
 (def person-rows
-  [{:person/id 2 :person/name "Sally"}
-   {:person/id 1 :person/name "Joe" :phone/id 1 :phone/type "home" :phone/number "555-1212" :billing/id 1 :billing/cc "3333-4444-5555-1111"}
+  [{:person/id 1 :person/name "Joe" :phone/id 1 :phone/type "home" :phone/number "555-1212" :billing/id 1 :billing/cc "3333-4444-5555-1111"}
+   {:person/id 2 :person/name "Sally"}
    ; Not sure if the columns will show up as nil or just missing on a left join
    {:person/id 1 :person/name "Joe" :phone/id 2 :phone/type "work" :phone/number "555-1212" :billing/id 1 :billing/cc "3333-4444-5555-1111"}])
 
@@ -83,10 +83,10 @@
 (defn decode-graph-edge
   "Add a graph edge to the given graph-db (which must already have the entities in it).
 
-  row is a row of the result set
-  from is the property on the entity that should point towards another entity
-  to is the property on the result row that contains the ID of the target
-  arity is :many or :one
+  `row` is a row of the result set
+  `from` is the property on the entity that should point towards another entity
+  `to` is the property on the result row that contains the ID of the target
+  `arity` is :many or :one
 
   Returns a new graph-db with the edge in place.
   "
@@ -193,13 +193,16 @@
   (dc/mkdn-pprint-source entities-in-row)
   sample-entities
   "Resulting in an om-style table."
+  (dc/mkdn-pprint-source om-style-table)
   om-style-table
   "Completing the entire om-style databae is just doing the same process across all rows in the result set.
 
   NOTE: we can short-circuit steps where the entity already exists in the result (dupe data in the result set
   from the nature of SQL). (TODO)"
+  (dc/mkdn-pprint-source all-entities)
   all-entities
-  "resulting in:"
+  "another reduction results in the full om-style database (without graph edges):"
+  (dc/mkdn-pprint-source om-result)
   om-result
 
   "# Generating the graph edges
@@ -220,8 +223,9 @@
   to the client: (assoc some fake key at top or something)"
   (dc/mkdn-pprint-source hacked-result)
   hacked-result
+  "and now using this query:"
   query
-  "So that we have something to send back to the client from the server:"
+  "We now have something to send back to the client from the server:"
   (om/db->tree query hacked-result hacked-result)
 
   "# Combining it all together
