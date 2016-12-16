@@ -134,6 +134,8 @@
                       {:person/phone [:db/id :phone/number :phone/type]}
                       {:person/billing [:db/id :billing/cc]}]}])
 
+(def client-result (om/db->tree query hacked-result hacked-result))
+
 (defcard-doc
   "# Converting a table to a tree
 
@@ -221,12 +223,14 @@
   final-result
   "and from there, we can hack the db to match up to an Om query and use Om `db->tree` to make our result to send
   to the client: (assoc some fake key at top or something)"
+  (dc/mkdn-pprint-source all-idents)
   (dc/mkdn-pprint-source hacked-result)
   hacked-result
-  "and now using this query:"
+  "and now using this query and `db->tree`:"
   query
+  (dc/mkdn-pprint-source client-result)
   "We now have something to send back to the client from the server:"
-  (om/db->tree query hacked-result hacked-result)
+  client-result
 
   "# Combining it all together
 
@@ -236,6 +240,12 @@
   the row-level graph edges that are implied in the model.
 
   TODO: function to do a final clojure.set/rename-keys on entities before response (spectre with transform)
+
   TODO: top-level function to combine all steps
+
+  TODO: optimize this all into a single pass
+
+  TODO: write a recursive version of this algorithm that doesn't need to leverage `db->tree` (probably requires a total order on the rows so that
+  things higher in the tree end up existing before their children.)
   "
   )
